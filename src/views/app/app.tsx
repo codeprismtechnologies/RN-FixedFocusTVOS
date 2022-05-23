@@ -1,9 +1,11 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground, Dimensions } from 'react-native'
 import 'react-native/tvos-types.d';
 import React from 'react'
 import appStyles from './app.style';
-const EnableScrollAniamtions = false;
+const EnableScrollAniamtions = true;
 const LaneNames = ["Continue Watching", "Favorites", "Movie", "TV Show", "Music", "Games", "Apps", "Books", "Other", "All"];
+export const SCREEN_WIDTH = Dimensions.get('window').width;
+export const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const App = () => {
   const flatListRef = React.useRef<FlatList>(null);
@@ -25,6 +27,9 @@ const App = () => {
         data={Array(10).fill("").map((i, x) => x)}
         renderItem={({ item, index }) => <SwimLane onLaneFocusChange={onLaneFocusChange} laneIndex={index} inFocus={index === currentLane} />}
         scrollEnabled={false}
+        contentContainerStyle={{
+          paddingBottom: SCREEN_HEIGHT,
+        }}
         getItemLayout={
           (data, index) => ({ length: laneHeightComputation, offset: laneHeightComputation * index, index })
         }
@@ -36,6 +41,7 @@ const App = () => {
 const SwimLane = ({ onLaneFocusChange, laneIndex, inFocus = false }: { onLaneFocusChange: (laneIndex: number) => void, laneIndex: number, inFocus: boolean }) => {
   const flatListRef = React.useRef<FlatList>(null);
   const [currentCard, setCurrentCard] = React.useState<number | null>(null);
+  const cardWidth = appStyles.card.width + appStyles.card.marginRight;
   const renderCards = ({ item, index }: any) => {
     return (
       <TouchableOpacity
@@ -56,7 +62,11 @@ const SwimLane = ({ onLaneFocusChange, laneIndex, inFocus = false }: { onLaneFoc
             <Text style={appStyles.cardTitle}>MF Card - {item}</Text>
           </ImageBackground>
         </ImageBackground>
-        <View style={StyleSheet.flatten([appStyles.card, appStyles.cardBorder, index === currentCard && inFocus ? appStyles.cardBorderFocused:{}])} />
+        <View
+          style={StyleSheet.flatten([
+            appStyles.card, appStyles.cardBorder,
+            index === currentCard && inFocus ? appStyles.cardBorderFocused : {}])}
+        />
       </TouchableOpacity>
     );
   }
@@ -75,12 +85,20 @@ const SwimLane = ({ onLaneFocusChange, laneIndex, inFocus = false }: { onLaneFoc
       <FlatList
         ref={flatListRef}
         keyExtractor={(item) => item.toString()}
-        data={Array(50).fill("").map((i, x) => x)}
+        data={Array(10).fill("").map((i, x) => x)}
         renderItem={renderCards}
         horizontal
         scrollEnabled={false}
+        contentContainerStyle={{
+          paddingRight: SCREEN_WIDTH,
+          paddingLeft: appStyles.laneTitleContainer.paddingLeft
+        }}
         getItemLayout={
-          (data, index) => ({ length: (appStyles.card.width + appStyles.card.marginRight), offset: (appStyles.card.width + appStyles.card.marginRight) * index, index })
+          (data, index) => (
+            {
+              length: (cardWidth),
+              offset: (cardWidth) * index, index
+            })
         }
       />
     </View>

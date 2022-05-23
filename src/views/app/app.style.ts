@@ -10,9 +10,9 @@ const appStyles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#ADADAD',
+    marginTop: 25
   },
   container: {
-    padding: 25,
     backgroundColor: '#f5f5f5',
     flex: 1
   },
@@ -56,7 +56,8 @@ const appStyles = StyleSheet.create({
     marginVertical: 10,
   },
   laneTitleContainer:{
-    height: 50
+    height: 50,
+    paddingLeft: 50
   },
   laneTitle:{
     fontSize: 28,
